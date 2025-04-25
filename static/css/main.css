@@ -1,0 +1,42 @@
+
+/* Keep preview <img> aspect ratio */
+.img-preview {
+    max-width: 256px;
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 5px solid #F8F8F8;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0.5em 0;
+}
+
+/* Hide default file input */
+input[type="file"] {
+    display: none;
+}
+
+/* Loader spinner styling */
+.loader {
+    border: 8px solid #f3f3f3;      /* Light grey */
+    border-top: 8px solid #3498db;  /* Blue */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+/* Keyframes for spinner rotation */
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Style for result <img> to preserve aspect ratio */
+#result img {
+    max-width: 256px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 0.5em;
+}

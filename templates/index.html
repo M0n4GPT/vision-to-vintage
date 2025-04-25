@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+  <div>
+    <!-- UPLOAD FORM -->
+    <form id="upload-file" enctype="multipart/form-data">
+      <label for="imageUpload" class="btn btn-primary">Upload Content Image</label>
+      <input
+        type="file"
+        name="file"
+        id="imageUpload"
+        accept="image/*">
+    </form>
+
+    <!-- PREVIEW & PREDICT -->
+    <div class="image-section" style="display:none; margin-top:1rem;">
+      <img
+        id="imagePreview"
+        class="img-preview"
+        src=""
+        alt="Content Preview">
+      <button
+        type="button"
+        class="btn btn-success"
+        id="btn-predict"
+        style="display:none; margin-top:0.5rem;">
+        Stylize!
+      </button>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader" style="display:none; margin-top:1rem;"></div>
+
+    <!-- RESULT (injected by AJAX) -->
+    <div id="result" style="margin-top:1rem;"></div>
+
+    <!-- RETRY BUTTON, shown after result -->
+    <div style="margin-top:1rem;">
+      <button
+        class="btn btn-secondary"
+        id="btn-retry"
+        style="display:none;">
+        Try Another Image
+      </button>
+    </div>
+  </div>
+{% endblock %}
