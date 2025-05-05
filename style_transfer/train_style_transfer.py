@@ -8,9 +8,10 @@ Model Structure:
 
 Usage examples (run on 4×A100 servers via torchrun):
 
+
 # Single GPU
 python train_style_transfer.py \
-    --data_root /home/cc/img-dataset \
+    --data_root "$IMG_DATA_DIR" \
     --global_batch_size 32 \
     --micro_batch_size 8 \
     --epochs 5 \
@@ -48,6 +49,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from torch import Tensor
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from torchvision import transforms, models
@@ -84,11 +86,11 @@ class StyleTransferDataset(Dataset):
         return self.transform(c_img), self.transform(s_img), label
 
 # ---------- AdaIN ----------
-def adain(content_feat, style_feat, eps=1e-5):
+def adain(content_feat: Tensor, style_feat: Tensor, eps: float = 1e-5) -> Tensor:
     c_mean = content_feat.mean(dim=[2,3], keepdim=True)
-    c_std = content_feat.std(dim=[2,3], keepdim=True)
+    c_std  = content_feat.std(dim=[2,3], keepdim=True)
     s_mean = style_feat.mean(dim=[2,3], keepdim=True)
-    s_std = style_feat.std(dim=[2,3], keepdim=True)
+    s_std  = style_feat.std(dim=[2,3], keepdim=True)
     norm = (content_feat - c_mean) / (c_std + eps)
     return norm * s_std + s_mean
 
@@ -99,14 +101,19 @@ class StyleTransferModel(nn.Module):
         vgg = models.vgg19(pretrained=True).features
         self.enc = nn.Sequential(*list(vgg.children()))
         for p in self.enc.parameters(): p.requires_grad = False
+
         self.dec = nn.Sequential(
             nn.Conv2d(512,256,3,padding=1), nn.ReLU(True),
-            nn.Upsample(scale_factor=2, mode='nearest'),
+            nn.Upsample(scale_factor=2,mode='nearest'),
             nn.Conv2d(256,128,3,padding=1), nn.ReLU(True),
-            nn.Upsample(scale_factor=2, mode='nearest'),
+            nn.Upsample(scale_factor=2,mode='nearest'),
             nn.Conv2d(128,64,3,padding=1), nn.ReLU(True),
-            nn.Upsample(scale_factor=2, mode='nearest'),
-            nn.Conv2d(64,3,3,padding=1)
+            nn.Upsample(scale_factor=2,mode='nearest'),
+            # 8→16→32→64→128→256*
+            nn.Conv2d(64,32,3,padding=1), nn.ReLU(True),
+            nn.Upsample(scale_factor=2,mode='nearest'),  # →128×128
+            nn.Upsample(scale_factor=2,mode='nearest'),  # →256×256 
+            nn.Conv2d(32,3,3,padding=1)                   # final is 3×256×256
         )
 
     def forward(self, content, style):
@@ -166,9 +173,12 @@ def main():
         transforms.Resize(256), transforms.CenterCrop(256), transforms.ToTensor(),
         transforms.Normalize(mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225])
     ])
+    # Use env var if available, else fallback to --data_root
+    data_root = os.getenv("IMG_DATA_DIR", args.data_root)
+
     ds = StyleTransferDataset(
-        os.path.join(args.data_root,'content'),
-        os.path.join(args.data_root,'style'),
+        os.path.join(data_root, 'content'),
+        os.path.join(data_root, 'style'),
         transform
     )
     sampler = DistributedSampler(ds) if distributed else None
