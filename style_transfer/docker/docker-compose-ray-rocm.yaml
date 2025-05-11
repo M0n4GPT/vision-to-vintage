@@ -139,4 +139,4 @@ services:
 volumes:
   grafana_storage:
   ray_tmp:
-  minio_data:、
+  minio_data:
