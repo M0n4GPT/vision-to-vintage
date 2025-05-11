@@ -152,4 +152,4 @@ def uploaded_file(filename):
 # MAIN 
 if __name__ == "__main__":
     # debug=False in production
-    app.run(host="0.0.0.0", port=8001, debug=True)
+    app.run(host="0.0.0.0", port=9090, debug=True)
