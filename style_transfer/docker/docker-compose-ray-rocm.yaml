@@ -113,7 +113,7 @@ services:
       - AWS_ENDPOINT_URL=http://minio:9000
     shm_size: '12g'
     volumes:
-      - food11:/mnt
+    - /home/cc/style_transfer/img-dataset:/home/jovyan/work/img-dataset
     depends_on:
       - ray-head
 
@@ -132,13 +132,11 @@ services:
       - AWS_ENDPOINT_URL=http://minio:9000
     shm_size: '12g'
     volumes:
-      - food11:/mnt
+    - /home/cc/style_transfer/img-dataset:/home/jovyan/work/img-dataset
     depends_on:
       - ray-head
 
 volumes:
   grafana_storage:
   ray_tmp:
-  minio_data:
-  food11:
-    external: true  # Uses externally created volume
+  minio_data:、
