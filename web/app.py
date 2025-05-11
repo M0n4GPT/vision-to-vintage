@@ -17,7 +17,8 @@ from PIL import Image
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 STYLE_DIR     = os.path.join(BASE_DIR, 'style')
-HUB_URL      = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+# HUB_URL      = "https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2"
+LOCAL_MODEL_PATH = os.path.join(BASE_DIR, 'models/arbitrary-image-stylization-v1-tensorflow1-256-v2')
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # os.makedirs(STYLE_DIR,    exist_ok=True)
@@ -26,7 +27,9 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 #  LOAD TF‑HUB MODEL 
-hub_model = hub.load(HUB_URL)
+# hub_model = hub.load(HUB_URL)
+hub_model = hub.load(LOCAL_MODEL_PATH)
+
 
 #  HELPERS 
 def load_img(path, max_dim=512):
