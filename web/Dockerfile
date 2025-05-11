@@ -16,7 +16,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY . /app
 
 # Expose the port on which the app will run
-EXPOSE 8001
+EXPOSE 9090
 
 # Run the command to start the Flask server
 CMD ["python","app.py"]
