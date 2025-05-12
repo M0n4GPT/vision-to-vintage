@@ -25,7 +25,7 @@ except ImportError:
     FSDP = None
 
 # ---------- Configure MLFlow ----------
-mlflow.set_tracking_uri("http://129.114.108.24:8000/")
+mlflow.set_tracking_uri("http://129.114.25.100:8080/")
 mlflow.set_experiment("style-trans")
 
 # ---------- Dataset ----------
