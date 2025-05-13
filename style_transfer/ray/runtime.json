@@ -1,0 +1,6 @@
+{
+    "pip": "requirements.txt",
+    "env_vars": {
+        "IMG_DATA_DIR": "/project35"
+    }
+}
